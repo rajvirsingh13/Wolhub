@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="WolHub — Your AI & Creator Hub for tools, prompts and workflows.">
+    <title>WolHub — AI & Creator Hub</title>
+
+    <style>
+        :root {
+            --bg: #f7f8fc;
+            --primary: #635bff;
+            --primary-dark: #5148e8;
+            --dark: #111827;
+            --muted: #6b7280;
+            --border: #e5e7eb;
+            --card: #ffffff;
+            --shadow: 0 16px 40px rgba(17, 24, 39, 0.08);
+            --radius: 20px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: var(--bg);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        button,
+        input {
+            font: inherit;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .container {
+            width: min(1120px, calc(100% - 40px));
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .site-header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.84);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(229, 231, 235, 0.85);
+        }
+
+        .nav {
+            min-height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 24px;
+        }
+
+        .brand {
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: -0.7px;
+            color: var(--primary);
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+            color: #4b5563;
+            font-size: 14px;
+            font-weight: 650;
+        }
+
+        .nav-links a {
+            transition: color 0.2s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        /* Hero */
+        .hero {
+            padding: 92px 0 56px;
+            text-align: center;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 14px;
+            border: 1px solid #dddafe;
+            background: #ffffff;
+            border-radius: 999px;
+            color: var(--primary);
+            font-size: 13px;
+            font-weight: 750;
+            box-shadow: 0 8px 24px rgba(99, 91, 255, 0.07);
+        }
+
+        .hero h1 {
+            margin: 20px auto 14px;
+            max-width: 760px;
+            font-size: clamp(44px, 7vw, 78px);
+            line-height: 0.98;
+            letter-spacing: -4px;
+            font-weight: 850;
+        }
+
+        .accent {
+            color: var(--primary);
+        }
+
+        .hero p {
+            max-width: 650px;
+            margin: 0 auto;
+            color: var(--muted);
+            font-size: 18px;
+        }
+
+        .hero-actions {
+            margin-top: 28px;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .btn {
+            border: 1px solid transparent;
+            border-radius: 12px;
+            padding: 12px 18px;
+            font-weight: 750;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .btn-primary {
+            color: white;
+            background: var(--primary);
+            box-shadow: 0 10px 24px rgba(99, 91, 255, 0.22);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            color: var(--dark);
+            background: white;
+            border-color: var(--border);
+        }
+
+        /* Search */
+        .search-area {
+            position: relative;
+            z-index: 20;
+            max-width: 820px;
+            margin: 0 auto;
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px;
+            background: white;
+            border: 1px solid #dddfea;
+            border-radius: 18px;
+            box-shadow: 0 18px 50px rgba(17, 24, 39, 0.09);
+        }
+
+        .search-box:focus-within {
+            border-color: rgba(99, 91, 255, 0.55);
+            box-shadow: 0 18px 55px rgba(99, 91, 255, 0.12);
+        }
+
+        .search-box input {
+            min-width: 0;
+            flex: 1;
+            border: 0;
+            outline: 0;
+            background: transparent;
+            padding: 15px 16px;
+            color: var(--dark);
+            font-size: 16px;
+        }
+
+        .search-box input::placeholder {
+            color: #9ca3af;
+        }
+
+        .search-box button {
+            border: 0;
+            border-radius: 12px;
+            padding: 13px 22px;
+            background: var(--primary);
+            color: white;
+            font-weight: 750;
+        }
+
+        .live-suggestions {
+            position: absolute;
+            top: calc(100% + 10px);
+            left: 0;
+            right: 0;
+            display: none;
+            overflow: hidden;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            text-align: left;
+        }
+
+        .live-suggestions.is-visible {
+            display: block;
+        }
+
+        .suggestion-item {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            padding: 13px 15px;
+            border: 0;
+            border-bottom: 1px solid #f0f1f4;
+            background: white;
+            color: var(--dark);
+            text-align: left;
+        }
+
+        .suggestion-item:last-child {
+            border-bottom: 0;
+        }
+
+        .suggestion-item:hover {
+            background: #f8f8ff;
+        }
+
+        .suggestion-icon {
+            width: 38px;
+            height: 38px;
+            display: grid;
+            place-items: center;
+            flex: 0 0 38px;
+            background: #f0efff;
+            border-radius: 11px;
+            font-size: 19px;
+        }
+
+        .suggestion-content {
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .suggestion-title {
+            font-weight: 750;
+        }
+
+        .suggestion-category {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        /* General sections */
+        section {
+            scroll-margin-top: 90px;
+        }
+
+        .section {
+            padding: 72px 0;
+        }
+
+        .section-heading {
+            max-width: 680px;
+            margin-bottom: 30px;
+        }
+
+        .section-heading h2 {
+            font-size: clamp(30px, 4vw, 44px);
+            line-height: 1.05;
+            letter-spacing: -1.7px;
+            margin-bottom: 10px;
+        }
+
+        .section-heading p {
+            color: var(--muted);
+        }
+
+        /* Results */
+        .results-section {
+            display: none;
+        }
+
+        .results-section.is-visible {
+            display: block;
+        }
+
+        .result-shell {
+            padding: 28px;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            box-shadow: var(--shadow);
+        }
+
+        .result-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 7px 11px;
+            border-radius: 999px;
+            background: #f0efff;
+            color: var(--primary);
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .result-title {
+            margin-top: 13px;
+            font-size: clamp(28px, 4vw, 40px);
+            line-height: 1.1;
+            letter-spacing: -1.2px;
+        }
+
+        .result-question {
+            margin-top: 7px;
+            color: var(--muted);
+        }
+
+        .option-grid {
+            margin-top: 25px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 13px;
+        }
+
+        .option-card {
+            min-height: 118px;
+            padding: 20px;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            background: white;
+            text-align: left;
+            transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .option-card:hover {
+            transform: translateY(-2px);
+            border-color: #cbc8ff;
+            box-shadow: 0 12px 30px rgba(17, 24, 39, 0.07);
+        }
+
+        .option-icon {
+            display: block;
+            font-size: 25px;
+            margin-bottom: 11px;
+        }
+
+        .option-name {
+            font-weight: 800;
+        }
+
+        .final-result {
+            margin-top: 30px;
+            display: grid;
+            gap: 24px;
+        }
+
+        .result-block {
+            padding: 22px;
+            background: #fbfbfd;
+            border: 1px solid var(--border);
+            border-radius: 17px;
+        }
+
+        .result-block-title {
+            font-size: 17px;
+            margin-bottom: 14px;
+        }
+
+        .tool-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .tool-item {
+            padding: 12px 15px;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+        }
+
+        .tool-name {
+            font-weight: 750;
+        }
+
+        .prompt-box {
+            position: relative;
+            padding: 17px 58px 17px 17px;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 13px;
+        }
+
+        .prompt-text {
+            color: #374151;
+            font-size: 14px;
+        }
+
+        .copy-prompt {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            background: white;
+            padding: 7px 10px;
+            color: var(--primary);
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .workflow-list {
+            padding-left: 22px;
+            color: #374151;
+        }
+
+        .workflow-list li {
+            padding: 5px 0;
+        }
+
+        .choose-another {
+            width: fit-content;
+            border: 0;
+            background: transparent;
+            color: var(--primary);
+            font-weight: 800;
+        }
+
+        .unknown-result {
+            text-align: center;
+            padding: 30px 10px;
+        }
+
+        .unknown-icon {
+            font-size: 34px;
+            margin-bottom: 10px;
+        }
+
+        .unknown-result h3 {
+            font-size: 24px;
+        }
+
+        .unknown-result p {
+            max-width: 600px;
+            margin: 7px auto 18px;
+            color: var(--muted);
+        }
+
+        .search-examples {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .search-example {
+            padding: 7px 11px;
+            background: #f0efff;
+            color: var(--primary);
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 750;
+        }
+
+        /* Category cards */
+        .category-grid,
+        .tool-grid,
+        .why-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .category-card,
+        .tool-card,
+        .why-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 23px;
+            box-shadow: 0 8px 24px rgba(17, 24, 39, 0.04);
+        }
+
+        .category-card {
+            text-align: left;
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+        }
+
+        .category-card:hover {
+            transform: translateY(-3px);
+            border-color: #cbc8ff;
+            box-shadow: var(--shadow);
+        }
+
+        .card-icon {
+            width: 46px;
+            height: 46px;
+            display: grid;
+            place-items: center;
+            margin-bottom: 16px;
+            border-radius: 13px;
+            background: #f0efff;
+            font-size: 23px;
+        }
+
+        .category-card h3,
+        .tool-card h3,
+        .why-card h3 {
+            margin-bottom: 6px;
+            font-size: 18px;
+        }
+
+        .category-card p,
+        .tool-card p,
+        .why-card p {
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .click-hint {
+            display: inline-block;
+            margin-top: 15px;
+            color: var(--primary);
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        /* Tools */
+        .tool-card {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .tool-card .tool-button {
+            margin-top: auto;
+            align-self: flex-start;
+            padding: 9px 13px;
+            border-radius: 10px;
+            background: var(--dark);
+            color: white;
+            font-size: 12px;
+            font-weight: 750;
+        }
+
+        /* Stats */
+        .stats {
+            padding: 42px 0;
+        }
+
+        .stats-card {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            padding: 30px;
+            border-radius: 24px;
+            background: var(--dark);
+            color: white;
+        }
+
+        .stat {
+            text-align: center;
+            padding: 8px;
+        }
+
+        .stat strong {
+            display: block;
+            font-size: 36px;
+            line-height: 1;
+            color: #b9b5ff;
+        }
+
+        .stat span {
+            display: block;
+            margin-top: 7px;
+            color: #d1d5db;
+            font-size: 13px;
+        }
+
+        /* Footer */
+        footer {
+            margin-top: 40px;
+            padding: 50px 0;
+            background: var(--dark);
+            color: white;
+        }
+
+        .footer-inner {
+            display: flex;
+            justify-content: space-between;
+            gap: 30px;
+            align-items: flex-end;
+        }
+
+        .footer-brand {
+            font-size: 25px;
+            font-weight: 850;
+            color: #b9b5ff;
+        }
+
+        .footer-copy {
+            margin-top: 5px;
+            color: #9ca3af;
+            font-size: 14px;
+        }
+
+        .copyright {
+            color: #9ca3af;
+            font-size: 13px;
+        }
+
+        @media (max-width: 820px) {
+            .hero {
+                padding-top: 70px;
+            }
+
+            .category-grid,
+            .tool-grid,
+            .why-grid,
+            .option-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 620px) {
+            .container {
+                width: min(100% - 24px, 1120px);
+            }
+
+            .nav {
+                min-height: 64px;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .hero {
+                padding: 62px 0 42px;
+            }
+
+            .hero h1 {
+                letter-spacing: -2.5px;
+            }
+
+            .hero p {
+                font-size: 16px;
+            }
+
+            .search-box {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-box button {
+                width: 100%;
+            }
+
+            .search-box input {
+                width: 100%;
+            }
+
+            .live-suggestions {
+                top: calc(100% + 7px);
+            }
+
+            .section {
+                padding: 54px 0;
+            }
+
+            .category-grid,
+            .tool-grid,
+            .why-grid,
+            .option-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .result-shell {
+                padding: 18px;
+                border-radius: 19px;
+            }
+
+            .result-block {
+                padding: 17px;
+            }
+
+            .stats-card {
+                grid-template-columns: 1fr;
+                padding: 22px;
+            }
+
+            .footer-inner {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .prompt-box {
+                padding-right: 17px;
+            }
+
+            .copy-prompt {
+                position: static;
+                margin-top: 12px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="site-header">
+        <div class="container nav">
+            <a class="brand" href="#top" aria-label="WolHub home">WolHub</a>
+
+            <nav class="nav-links" aria-label="Main navigation">
+                <a href="#tools">AI Tools</a>
+                <a href="#categories">Categories</a>
+                <a href="#about">About</a>
+            </nav>
+        </div>
+    </header>
+
+    <main id="top">
+        <section class="hero">
+            <div class="container">
+                <div class="eyebrow">✨ Your AI &amp; Creator Hub</div>
+
+                <h1>
+                    Everything AI.<br>
+                    <span class="accent">One Place.</span>
+                </h1>
+
+                <p>
+                    Find the right AI tool, prompt and workflow
+                    for whatever you want to create.
+                </p>
+
+                <div class="hero-actions">
+                    <a class="btn btn-primary" href="#tools">Explore AI Tools</a>
+                    <a class="btn btn-secondary" href="#categories">Explore Categories</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="container" aria-label="WolHub smart search">
+            <div class="search-area">
+                <form class="search-box" id="searchForm">
+                    <input
+                        id="searchInput"
+                        type="text"
+                        autocomplete="off"
+                        placeholder="What do you want to create?"
+                        aria-label="What do you want to create?"
+                    >
+
+                    <button type="submit">Search</button>
+                </form>
+
+                <div
+                    class="live-suggestions"
+                    id="liveSuggestions"
+                    role="listbox"
+                    aria-label="Search suggestions"
+                ></div>
+            </div>
+        </section>
+
+        <section class="section results-section" id="resultsSection">
+            <div class="container">
+                <div class="result-shell">
+                    <div id="resultContainer"></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="categories">
+            <div class="container">
+                <div class="section-heading">
+                    <h2>Choose a creator category.</h2>
+                    <p>Start with a goal and WolHub will guide you to the right option.</p>
+                </div>
+
+                <div class="category-grid">
+                    <button class="category-card" type="button" data-category="image">
+                        <span class="card-icon" aria-hidden="true">🖼️</span>
+                        <h3>AI Image</h3>
+                        <p>Create portraits, posters, product images, room concepts and more.</p>
+                        <span class="click-hint">Explore →</span>
+                    </button>
+
+                    <button class="category-card" type="button" data-category="video">
+                        <span class="card-icon" aria-hidden="true">🎬</span>
+                        <h3>AI Video</h3>
+                        <p>Plan reels, YouTube videos, product videos, stories and explainers.</p>
+                        <span class="click-hint">Explore →</span>
+                    </button>
+
+                    <button class="category-card" type="button" data-category="writing">
+                        <span class="card-icon" aria-hidden="true">✍️</span>
+                        <h3>AI Writing</h3>
+                        <p>Write articles, blogs, captions, scripts, emails and stories.</p>
+                        <span class="click-hint">Explore →</span>
+                    </button>
+
+                    <button class="category-card" type="button" data-category="voice">
+                        <span class="card-icon" aria-hidden="true">🎙️</span>
+                        <h3>AI Voice</h3>
+                        <p>Create voiceovers, narration, podcasts, character voices and audio.</p>
+                        <span class="click-hint">Explore →</span>
+                    </button>
+
+                    <button class="category-card" type="button" data-category="social">
+                        <span class="card-icon" aria-hidden="true">📱</span>
+                        <h3>Social Media</h3>
+                        <p>Plan posts, reels, captions, thumbnails, ideas and hashtags.</p>
+                        <span class="click-hint">Explore →</span>
+                    </button>
+
+                    <button class="category-card" type="button" data-category="coding">
+                        <span class="card-icon" aria-hidden="true">💻</span>
+                        <h3>AI Coding</h3>
+                        <p>Build websites, apps and code, or debug and improve existing projects.</p>
+                        <span class="click-hint">Explore →</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="tools">
+            <div class="container">
+                <div class="section-heading">
+                    <h2>Featured AI Tools</h2>
+                    <p>Popular tools you can use with WolHub's prompts and workflows.</p>
+                </div>
+
+                <div class="tool-grid">
+                    <article class="tool-card">
+                        <div class="card-icon" aria-hidden="true">🤖</div>
+                        <h3>ChatGPT</h3>
+                        <p>Useful for writing, planning, brainstorming, coding and creator workflows.</p>
+                        <a
+                            class="tool-button"
+                            href="https://chatgpt.com/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >Visit Tool ↗</a>
+                    </article>
+
+                    <article class="tool-card">
+                        <div class="card-icon" aria-hidden="true">🎨</div>
+                        <h3>Canva</h3>
+                        <p>Create social graphics, presentations, designs, thumbnails and more.</p>
+                        <a
+                            class="tool-button"
+                            href="https://www.canva.com/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >Visit Tool ↗</a>
+                    </article>
+
+                    <article class="tool-card">
+                        <div class="card-icon" aria-hidden="true">✨</div>
+                        <h3>Gemini</h3>
+                        <p>Helpful for research, writing, ideas, coding and everyday AI assistance.</p>
+                        <a
+                            class="tool-button"
+                            href="https://gemini.google.com/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >Visit Tool ↗</a>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="stats">
+            <div class="container">
+                <div class="stats-card">
+                    <div class="stat">
+                        <strong>6+</strong>
+                        <span>AI Categories</span>
+                    </div>
+                    <div class="stat">
+                        <strong>3+</strong>
+                        <span>Featured Tools</span>
+                    </div>
+                    <div class="stat">
+                        <strong>∞</strong>
+                        <span>Creator Ideas</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="about">
+            <div class="container">
+                <div class="section-heading">
+                    <h2>Why WolHub?</h2>
+                    <p>Don't just find AI tools. Learn how to use them.</p>
+                </div>
+
+                <div class="why-grid">
+                    <article class="why-card">
+                        <div class="card-icon" aria-hidden="true">🔎</div>
+                        <h3>Find the Right Tool</h3>
+                        <p>Tell WolHub what you want to create and discover tools matched to your goal.</p>
+                    </article>
+
+                    <article class="why-card">
+                        <div class="card-icon" aria-hidden="true">🎯</div>
+                        <h3>Ready Prompts</h3>
+                        <p>Start faster with practical prompts that you can copy and customize.</p>
+                    </article>
+
+                    <article class="why-card">
+                        <div class="card-icon" aria-hidden="true">⚡</div>
+                        <h3>Step-by-Step</h3>
+                        <p>Follow a simple workflow from your idea to a usable final result.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container footer-inner">
+            <div>
+                <div class="footer-brand">WolHub</div>
+                <div class="footer-copy">AI Tools • Creator Resources • Prompts • Workflows</div>
+            </div>
+
+            <div class="copyright">© 2026 WolHub</div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
